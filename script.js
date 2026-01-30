@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 <div class="control-group">
                     <label style="color: #c0392b;">
-                        <input type="checkbox" class="det-friday"> 😈 Force on Friday (Evil Bonus)
+                        <input type="checkbox" class="det-friday"> Force on Friday
                     </label>
                 </div>
 
