@@ -1,115 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>School Policy Customizer</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Policy Customizer</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>School Policy Customizer</h1>
+    <div class="container">
+        <header>
+            <h1>School Policy Customizer</h1>
+            <p>Select a punishment for each infraction below.</p>
+        </header>
 
-<!-- List of behaviors -->
-<div id="behaviors">
-  <h2>Behavior: Not doing Homework</h2>
-  <select id="noHomework"></select>
+        <div id="behavior-list"></div>
 
-  <h2>Behavior: Being late 4 times</h2>
-  <select id="lateSubmission"></select>
+        <div class="score-card">
+            <h2>Total Harshness Rating</h2>
+            <div id="rating-display">0</div>
+        </div>
+    </div>
 
-  <h2>Behavior: Being late 6 times</h2>
-  <select id="lateSubmissionSixTimes"></select>
-
-  <h2>Behavior: Skipping class</h2>
-  <select id="skippingClass"></select>
-
-  <h2>Behavior: Skipping school</h2>
-  <select id="skippingSchool"></select>
-
-  <h2>Behavior: Talking in class</h2>
-  <select id="disruptiveClass"></select>
-
-  <h2>Behavior: Playing video games in class</h2>
-  <select id="playVideoGames"></select>
-
-  <h2>Behavior: Being on phone in class</h2>
-  <select id="phoneInClass"></select>
-
-  <h2>Behavior: Not doing work</h2>
-  <select id="notDoingWork"></select>
-
-  <h2>Behavior: Minor Prank</h2>
-  <select id="minorPrank"></select>
-
-  <h2>Behavior: Major Prank</h2>
-  <select id="majorPrank"></select>
-
-  <h2>Behavior: Leaving classroom before bell</h2>
-  <select id="leavingBeforeBell"></select>
-
-  <h2>Behavior: Drawing on bathroom stall door</h2>
-  <select id="drawingOnStall"></select>
-
-  <h2>Behavior: Minor assignment done late</h2>
-  <select id="minorLateAssignment"></select>
-
-  <h2>Behavior: Major assignment done late</h2>
-  <select id="majorLateAssignment"></select>
-
-  <h2>Behavior: Minor assignment not done</h2>
-  <select id="minorNoAssignment"></select>
-
-  <h2>Behavior: Major assignment not done</h2>
-  <select id="majorNoAssignment"></select>
-
-  <h2>Behavior: Less than 70% grade on test</h2>
-  <select id="lowTestScore"></select>
-</div>
-
-<p>Harshness Rating: <span id="rating">0</span></p>
-
-<script>
-  const options = [
-    { value: "detention", text: "Detention (for 1 hour)" },
-    { value: "extraAssignment", text: "Extra homework" },
-    { value: "lunchDetention", text: "Lunch detention" },
-    { value: "detention2Hours", text: "Detention (for 2 hours)" },
-    { value: "saturdayDetention", text: "Saturday detention for 3 hours." },
-    { value: "weekDetention1h", text: "Detention every day after school for 1 hour for 1 week" },
-    { value: "weekDetention2h", text: "Detention every day after school for 2 hours for 1 week" },
-    { value: "weekDetention1h2w", text: "Detention every day after school for 1 hour for 2 weeks" },
-    { value: "weekDetention2h2w", text: "Detention every day after school for 2 hours for 2 weeks" }
-  ];
-
-  document.querySelectorAll('#behaviors select').forEach(select => {
-    options.forEach(option => {
-      const opt = document.createElement('option');
-      opt.value = option.value;
-      opt.textContent = option.text;
-      select.appendChild(opt);
-    });
-    select.onchange = updateRating; // Assign the change event
-  });
-
-  function updateRating() {
-    var punishments = {
-      'lunchDetention': 5,
-      'extraAssignment': 10,
-      'detention': 20,
-      'detention2Hours': 25,
-      'saturdayDetention': 30,
-      'weekDetention1h': 50,
-      'weekDetention2h': 100,
-      'weekDetention1h2w': 100,
-      'weekDetention2h2w': 200
-    };
-
-    var totalRating = Array.from(document.querySelectorAll('#behaviors select')).reduce((sum, select) => {
-      return sum + (punishments[select.value] || 0);
-    }, 0);
-
-    document.getElementById('rating').innerText = totalRating;
-  }
-</script>
+    <script src="config.js"></script>
+    <script src="script.js"></script>
 
 </body>
 </html>
