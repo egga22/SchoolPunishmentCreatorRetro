@@ -1,29 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Policy Customizer</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+// config.js
 
-    <div class="container">
-        <header>
-            <h1>School Policy Customizer</h1>
-            <p>Select a punishment for each infraction below.</p>
-        </header>
+const AppConfig = {
+    // The list of behaviors to generate rows for
+    behaviors: [
+        "Not doing Homework",
+        "Being late 4 times",
+        "Being late 6 times",
+        "Skipping class",
+        "Skipping school",
+        "Talking in class",
+        "Playing video games in class",
+        "Being on phone in class",
+        "Not doing work",
+        "Minor Prank",
+        "Major Prank",
+        "Leaving classroom before bell",
+        "Drawing on bathroom stall door",
+        "Minor assignment done late",
+        "Major assignment done late",
+        "Minor assignment not done",
+        "Major assignment not done",
+        "Less than 70% grade on test"
+    ],
 
-        <div id="behavior-list"></div>
+    // SCORING FORMULAS
+    math: {
+        // Simple punishments
+        none: 0,
+        lunchDetention: 5, // Legacy simple option if you want it
+        
+        // Detention Calculation Settings
+        detention: {
+            basePerHour: 15,    // Points per hour of detention
+            saturdayMultiplier: 2.0, // Saturday is 2x as harsh
+            lunchMultiplier: 1.5,    // Lunch is 1.5x as harsh
+            fridayBonus: 20,         // Flat points added for "Friday Only" evilness
+        },
 
-        <div class="score-card">
-            <h2>Total Harshness Rating</h2>
-            <div id="rating-display">0</div>
-        </div>
-    </div>
-
-    <script src="config.js"></script>
-    <script src="script.js"></script>
-
-</body>
-</html>
+        // Homework Calculation Settings
+        homework: {
+            points perMinute: 0.5 // 30 mins = 15 points
+        }
+    }
+};
