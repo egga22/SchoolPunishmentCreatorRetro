@@ -29,7 +29,7 @@ const AppConfig = {
 
         // Homework Calculation Settings
         homework: {
-            points perMinute: 0.5 // 30 mins = 15 points
+            pointsperMinute: 0.5 // 30 mins = 15 points
         }
     }
 };
