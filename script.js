@@ -42,9 +42,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <div class="settings-panel panel-homework" id="panel-homework-${id}">
                 <div class="control-group">
-                    <label>⏱ Time to complete: <span id="hw-val-${id}">30</span> mins</label>
+                    <label>⏱ Minutes per unit: <span id="hw-val-${id}">30</span> mins</label>
                     <input type="range" class="hw-slider" min="5" max="180" step="5" value="30" 
                         oninput="document.getElementById('hw-val-${id}').innerText = this.value">
+                </div>
+                <div class="control-group">
+                    <label>🧮 Variables (scale the minutes)</label>
+                    <div class="variable-controls">
+                        <label>
+                            Multiplier: <span id="hw-mult-val-${id}">1.00</span>
+                            <input type="number" class="hw-var-multiplier" min="0" step="0.05" value="1"
+                                oninput="document.getElementById('hw-mult-val-${id}').innerText = Number(this.value || 0).toFixed(2)">
+                        </label>
+                        <label>
+                            Variable value: <span id="hw-var-val-${id}">1</span>
+                            <input type="number" class="hw-var-value" min="0" step="1" value="1"
+                                oninput="document.getElementById('hw-var-val-${id}').innerText = this.value || 0">
+                        </label>
+                    </div>
+                    <small>Example: set multiplier to 1.25 and variable value to missed minutes.</small>
                 </div>
             </div>
 
@@ -63,6 +79,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     <label>⏳ Duration per session: <span id="dur-val-${id}">1.0</span> hours</label>
                     <input type="range" class="det-duration" min="0.5" max="5.0" step="0.5" value="1.0"
                         oninput="document.getElementById('dur-val-${id}').innerText = this.value">
+                </div>
+
+                <div class="control-group">
+                    <label>🧮 Variables (scale the hours)</label>
+                    <div class="variable-controls">
+                        <label>
+                            Multiplier: <span id="det-mult-val-${id}">1.00</span>
+                            <input type="number" class="det-var-multiplier" min="0" step="0.05" value="1"
+                                oninput="document.getElementById('det-mult-val-${id}').innerText = Number(this.value || 0).toFixed(2)">
+                        </label>
+                        <label>
+                            Variable value: <span id="det-var-val-${id}">1</span>
+                            <input type="number" class="det-var-value" min="0" step="1" value="1"
+                                oninput="document.getElementById('det-var-val-${id}').innerText = this.value || 0">
+                        </label>
+                    </div>
+                    <small>Scale the session length based on the situation.</small>
                 </div>
 
                 <div class="control-group">
@@ -108,12 +141,22 @@ document.addEventListener('DOMContentLoaded', () => {
             } 
             else if (selection === 'custom_homework') {
                 // Get slider value
-                const minutes = parseInt(row.querySelector('.hw-slider').value);
-                totalScore += (minutes * AppConfig.math.homework.pointsPerMinute);
+                const minutesPerUnit = parseInt(row.querySelector('.hw-slider').value);
+                const variableMultiplierRaw = parseFloat(row.querySelector('.hw-var-multiplier').value);
+                const variableValueRaw = parseFloat(row.querySelector('.hw-var-value').value);
+                const variableMultiplier = Number.isNaN(variableMultiplierRaw) ? 1 : variableMultiplierRaw;
+                const variableValue = Number.isNaN(variableValueRaw) ? 1 : variableValueRaw;
+                const scaledMinutes = minutesPerUnit * variableMultiplier * variableValue;
+                totalScore += (scaledMinutes * AppConfig.math.homework.pointsPerMinute);
             } 
             else if (selection === 'custom_detention') {
                 // 1. Base Duration & Recurrence
-                const duration = parseFloat(row.querySelector('.det-duration').value);
+                const baseDuration = parseFloat(row.querySelector('.det-duration').value);
+                const variableMultiplierRaw = parseFloat(row.querySelector('.det-var-multiplier').value);
+                const variableValueRaw = parseFloat(row.querySelector('.det-var-value').value);
+                const variableMultiplier = Number.isNaN(variableMultiplierRaw) ? 1 : variableMultiplierRaw;
+                const variableValue = Number.isNaN(variableValueRaw) ? 1 : variableValueRaw;
+                const duration = baseDuration * variableMultiplier * variableValue;
                 const recurringDays = parseInt(row.querySelector('.det-recurring').value);
                 let rowScore = 0;
 

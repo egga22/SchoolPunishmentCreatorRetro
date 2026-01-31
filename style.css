@@ -1,7 +1,7 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #eef2f5;
-    color: #333;
+    background: linear-gradient(180deg, #eef2f5 0%, #f7f9fc 100%);
+    color: #2d3748;
     margin: 0;
     padding: 20px;
     display: flex;
@@ -14,7 +14,7 @@ body {
     max-width: 800px;
     padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 15px 30px rgba(15, 23, 42, 0.08);
 }
 
 header {
@@ -24,7 +24,11 @@ header {
     padding-bottom: 15px;
 }
 
-h1 { margin: 0; color: #2c3e50; }
+h1 { margin: 0; color: #1f2937; }
+header p {
+    margin-top: 8px;
+    color: #4a5568;
+}
 
 .behavior-item {
     background-color: #fff;
@@ -61,6 +65,7 @@ select {
     border: 1px solid #ccc;
     font-size: 1em;
     min-width: 200px;
+    background-color: #fff;
 }
 
 /* THE HIDDEN SETTINGS PANEL */
@@ -90,6 +95,11 @@ select {
     color: #555;
     font-weight: 600;
 }
+.control-group small {
+    display: block;
+    margin-top: 4px;
+    color: #6b7280;
+}
 
 .checkbox-group {
     display: flex;
@@ -104,22 +114,51 @@ select {
 input[type="range"] {
     width: 100%;
 }
+input[type="number"] {
+    width: 120px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #cbd5f5;
+}
 
 .score-card {
-    position: sticky;
-    bottom: 20px;
-    background-color: #2c3e50;
-    color: white;
+    background: #fef7e6;
+    color: #5b3a12;
     padding: 20px;
     border-radius: 12px;
     text-align: center;
     margin-top: 30px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    z-index: 100;
+    border: 1px solid #f9d9a6;
+    box-shadow: 0 5px 15px rgba(249, 217, 166, 0.35);
 }
 
 #rating-display {
-    font-size: 3em;
+    font-size: 2.5em;
     font-weight: 800;
-    color: #e74c3c;
+    color: #dd6b20;
+}
+
+.score-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.score-badge {
+    background-color: #fbd38d;
+    color: #7b341e;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.variable-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
 }
