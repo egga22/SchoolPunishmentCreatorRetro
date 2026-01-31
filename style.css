@@ -120,6 +120,12 @@ input[type="number"] {
     border-radius: 6px;
     border: 1px solid #cbd5f5;
 }
+input[type="text"] {
+    width: 220px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #cbd5f5;
+}
 
 .score-card {
     background: #fef7e6;
@@ -156,9 +162,6 @@ input[type="number"] {
     letter-spacing: 0.04em;
 }
 
-.variable-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
+.friday-option.disabled {
+    color: #9ca3af;
 }

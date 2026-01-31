@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     AppConfig.behaviors.forEach((behaviorName, index) => {
         const itemHTML = createBehaviorItemHTML(behaviorName, index);
         behaviorContainer.insertAdjacentHTML('beforeend', itemHTML);
+        const row = document.getElementById(`row-${index}`);
+        initializeDetentionRow(row);
     });
 
     // 2. ATTACH EVENTS
@@ -17,6 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (target.classList.contains('main-selector')) {
             const rowId = target.dataset.id;
             updatePanelVisibility(rowId, target.value);
+        }
+
+        if (target.classList.contains('det-type')) {
+            const row = target.closest('.behavior-item');
+            initializeDetentionRow(row);
+        }
+
+        if (target.classList.contains('det-duration')) {
+            const row = target.closest('.behavior-item');
+            updateDurationLabel(row);
         }
 
         // Whenever ANY input changes, recalculate the total score
@@ -34,79 +46,62 @@ document.addEventListener('DOMContentLoaded', () => {
                 <label>${name}</label>
                 <select class="main-selector" data-id="${id}">
                     <option value="none">No Punishment</option>
-                    <option value="simple_lunch">Simple Lunch Detention (Legacy)</option>
-                    <option value="custom_homework">📝 Extra Homework (Custom)</option>
-                    <option value="custom_detention">🔒 Detention (Custom)</option>
+                    <option value="simple_lunch">Lunch Detention</option>
+                    <option value="custom_homework">Extra Homework</option>
+                    <option value="custom_detention">Detention</option>
                 </select>
             </div>
 
             <div class="settings-panel panel-homework" id="panel-homework-${id}">
                 <div class="control-group">
-                    <label>⏱ Minutes per unit: <span id="hw-val-${id}">30</span> mins</label>
+                    <label>Minutes per unit: <span id="hw-val-${id}">30</span></label>
                     <input type="range" class="hw-slider" min="5" max="180" step="5" value="30" 
                         oninput="document.getElementById('hw-val-${id}').innerText = this.value">
                 </div>
                 <div class="control-group">
-                    <label>🧮 Variables (scale the minutes)</label>
-                    <div class="variable-controls">
-                        <label>
-                            Multiplier: <span id="hw-mult-val-${id}">1.00</span>
-                            <input type="number" class="hw-var-multiplier" min="0" step="0.05" value="1"
-                                oninput="document.getElementById('hw-mult-val-${id}').innerText = Number(this.value || 0).toFixed(2)">
-                        </label>
-                        <label>
-                            Variable value: <span id="hw-var-val-${id}">1</span>
-                            <input type="number" class="hw-var-value" min="0" step="1" value="1"
-                                oninput="document.getElementById('hw-var-val-${id}').innerText = this.value || 0">
-                        </label>
-                    </div>
-                    <small>Example: set multiplier to 1.25 and variable value to missed minutes.</small>
+                    <label>Equation</label>
+                    <input type="text" class="hw-equation" value="base" placeholder="e.g. base * a * b">
+                </div>
+                <div class="control-group">
+                    <label>Variables</label>
+                    <input type="text" class="hw-variables" value="a=1, b=1" placeholder="a=2, b=3">
                 </div>
             </div>
 
             <div class="settings-panel panel-detention" id="panel-detention-${id}">
                 
                 <div class="control-group">
-                    <label>📍 Type (Mix & Match):</label>
-                    <div class="checkbox-group">
-                        <label><input type="checkbox" class="det-type" value="lunch"> Lunch</label>
-                        <label><input type="checkbox" class="det-type" value="after"> After School</label>
-                        <label><input type="checkbox" class="det-type" value="saturday"> Saturday</label>
-                    </div>
+                    <label>Type</label>
+                    <select class="det-type">
+                        <option value="after">After School</option>
+                        <option value="lunch">Lunch</option>
+                        <option value="saturday">Saturday</option>
+                    </select>
                 </div>
 
                 <div class="control-group">
-                    <label>⏳ Duration per session: <span id="dur-val-${id}">1.0</span> hours</label>
-                    <input type="range" class="det-duration" min="0.5" max="5.0" step="0.5" value="1.0"
-                        oninput="document.getElementById('dur-val-${id}').innerText = this.value">
+                    <label>Duration: <span id="dur-val-${id}">1.0</span></label>
+                    <input type="range" class="det-duration" min="0.5" max="5.0" step="0.5" value="1.0">
                 </div>
 
                 <div class="control-group">
-                    <label>🧮 Variables (scale the hours)</label>
-                    <div class="variable-controls">
-                        <label>
-                            Multiplier: <span id="det-mult-val-${id}">1.00</span>
-                            <input type="number" class="det-var-multiplier" min="0" step="0.05" value="1"
-                                oninput="document.getElementById('det-mult-val-${id}').innerText = Number(this.value || 0).toFixed(2)">
-                        </label>
-                        <label>
-                            Variable value: <span id="det-var-val-${id}">1</span>
-                            <input type="number" class="det-var-value" min="0" step="1" value="1"
-                                oninput="document.getElementById('det-var-val-${id}').innerText = this.value || 0">
-                        </label>
-                    </div>
-                    <small>Scale the session length based on the situation.</small>
+                    <label>Equation</label>
+                    <input type="text" class="det-equation" value="base" placeholder="e.g. base * a * b">
+                </div>
+                <div class="control-group">
+                    <label>Variables</label>
+                    <input type="text" class="det-variables" value="a=1, b=1" placeholder="a=2, b=3">
                 </div>
 
                 <div class="control-group">
-                    <label>🔁 Recurring? (Days in a row): <span id="rec-val-${id}">1</span> day(s)</label>
+                    <label>Days: <span id="rec-val-${id}">1</span></label>
                     <input type="range" class="det-recurring" min="1" max="10" step="1" value="1"
                         oninput="document.getElementById('rec-val-${id}').innerText = this.value">
                 </div>
 
                 <div class="control-group">
-                    <label style="color: #c0392b;">
-                        <input type="checkbox" class="det-friday"> Force on Friday
+                    <label class="friday-option" style="color: #c0392b;">
+                        <input type="checkbox" class="det-friday"> Friday only
                     </label>
                 </div>
 
@@ -128,6 +123,81 @@ document.addEventListener('DOMContentLoaded', () => {
         if (value === 'custom_detention') detentionPanel.classList.add('active');
     }
 
+    function parseVariables(raw) {
+        if (!raw) return {};
+        return raw.split(',').reduce((vars, entry) => {
+            const [key, value] = entry.split('=').map(part => part && part.trim());
+            if (!key) return vars;
+            if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) return vars;
+            const parsedValue = parseFloat(value);
+            vars[key] = Number.isNaN(parsedValue) ? 0 : parsedValue;
+            return vars;
+        }, {});
+    }
+
+    function evaluateExpression(expression, variables) {
+        const sanitized = (expression || '').trim() || '1';
+        if (!/^[0-9+\-*/().\s_a-zA-Z]*$/.test(sanitized)) {
+            return 1;
+        }
+        const names = Object.keys(variables);
+        const values = Object.values(variables);
+        try {
+            const fn = new Function(...names, `return (${sanitized});`);
+            const result = fn(...values);
+            return Number.isFinite(result) ? result : 1;
+        } catch (error) {
+            return 1;
+        }
+    }
+
+    function updateDurationLabel(row) {
+        const type = row.querySelector('.det-type').value;
+        const durationInput = row.querySelector('.det-duration');
+        const display = row.querySelector('[id^="dur-val-"]');
+        const value = parseFloat(durationInput.value);
+        if (type === 'lunch') {
+            const minutes = Math.round(value * 60);
+            display.innerText = `${minutes} min`;
+        } else {
+            display.innerText = `${value.toFixed(1)} hrs`;
+        }
+    }
+
+    function initializeDetentionRow(row) {
+        const typeSelect = row.querySelector('.det-type');
+        const durationInput = row.querySelector('.det-duration');
+        const fridayOption = row.querySelector('.det-friday');
+        const fridayLabel = row.querySelector('.friday-option');
+
+        if (typeSelect.value === 'lunch') {
+            durationInput.min = '0.25';
+            durationInput.max = '0.75';
+            durationInput.step = '0.25';
+            if (parseFloat(durationInput.value) > 0.75) {
+                durationInput.value = '0.75';
+            }
+        } else {
+            durationInput.min = '0.5';
+            durationInput.max = '5.0';
+            durationInput.step = '0.5';
+            if (parseFloat(durationInput.value) < 0.5) {
+                durationInput.value = '0.5';
+            }
+        }
+
+        if (typeSelect.value === 'saturday') {
+            fridayOption.checked = false;
+            fridayOption.disabled = true;
+            fridayLabel.classList.add('disabled');
+        } else {
+            fridayOption.disabled = false;
+            fridayLabel.classList.remove('disabled');
+        }
+
+        updateDurationLabel(row);
+    }
+
     function calculateTotalHarshness() {
         let totalScore = 0;
         const rows = document.querySelectorAll('.behavior-item');
@@ -142,41 +212,30 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (selection === 'custom_homework') {
                 // Get slider value
                 const minutesPerUnit = parseInt(row.querySelector('.hw-slider').value);
-                const variableMultiplierRaw = parseFloat(row.querySelector('.hw-var-multiplier').value);
-                const variableValueRaw = parseFloat(row.querySelector('.hw-var-value').value);
-                const variableMultiplier = Number.isNaN(variableMultiplierRaw) ? 1 : variableMultiplierRaw;
-                const variableValue = Number.isNaN(variableValueRaw) ? 1 : variableValueRaw;
-                const scaledMinutes = minutesPerUnit * variableMultiplier * variableValue;
+                const equation = row.querySelector('.hw-equation').value;
+                const variables = parseVariables(row.querySelector('.hw-variables').value);
+                variables.base = minutesPerUnit;
+                const scaledMinutes = Math.max(0, evaluateExpression(equation, variables));
                 totalScore += (scaledMinutes * AppConfig.math.homework.pointsPerMinute);
             } 
             else if (selection === 'custom_detention') {
                 // 1. Base Duration & Recurrence
                 const baseDuration = parseFloat(row.querySelector('.det-duration').value);
-                const variableMultiplierRaw = parseFloat(row.querySelector('.det-var-multiplier').value);
-                const variableValueRaw = parseFloat(row.querySelector('.det-var-value').value);
-                const variableMultiplier = Number.isNaN(variableMultiplierRaw) ? 1 : variableMultiplierRaw;
-                const variableValue = Number.isNaN(variableValueRaw) ? 1 : variableValueRaw;
-                const duration = baseDuration * variableMultiplier * variableValue;
+                const equation = row.querySelector('.det-equation').value;
+                const variables = parseVariables(row.querySelector('.det-variables').value);
+                variables.base = baseDuration;
+                let duration = Math.max(0, evaluateExpression(equation, variables));
                 const recurringDays = parseInt(row.querySelector('.det-recurring').value);
                 let rowScore = 0;
 
-                // 2. Types Multipliers
-                const types = row.querySelectorAll('.det-type:checked');
-                let typeMultiplier = 0;
-                
-                if (types.length === 0) {
-                    // If they selected Custom Detention but checked NO boxes, 
-                    // we assume standard after school (multiplier 1) or 0? 
-                    // Let's assume standard 1.0 to prevent confusion
-                    typeMultiplier = 1; 
-                } else {
-                    types.forEach(chk => {
-                        if (chk.value === 'lunch') typeMultiplier += AppConfig.math.detention.lunchMultiplier;
-                        if (chk.value === 'after') typeMultiplier += 1.0; // Standard
-                        if (chk.value === 'saturday') typeMultiplier += AppConfig.math.detention.saturdayMultiplier;
-                    });
-                    // Average the multipliers? Or Sum them? 
-                    // User said "Mix and Match", implies doing BOTH. So we Sum.
+                // 2. Type Multiplier
+                const type = row.querySelector('.det-type').value;
+                let typeMultiplier = 1;
+                if (type === 'lunch') typeMultiplier = AppConfig.math.detention.lunchMultiplier;
+                if (type === 'saturday') typeMultiplier = AppConfig.math.detention.saturdayMultiplier;
+
+                if (type === 'lunch') {
+                    duration = Math.min(duration, 0.75);
                 }
 
                 // 3. Calculate Base Score
